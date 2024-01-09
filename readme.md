@@ -25,7 +25,7 @@ I do prefer to use a plugin free like the first version to acheive this.
 
 here you go how to implement same concept with swiper.
 
-To integrate the Swiper.js slider with the JavaScript solution you've provided, you need to make a few adjustments. The key here is to manage the vertical scroll behavior based on the position of the Swiper slider in the viewport and to utilize Swiper's own methods for horizontal scrolling.
+To integrate the Swiper.js is to manage the vertical scroll behavior based on the position of the Swiper slider in the viewport and to utilize Swiper's own methods for horizontal scrolling.
 
 ### Steps to Integrate:
 

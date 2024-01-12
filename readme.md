@@ -4,15 +4,16 @@ Requirement Specification for Swiper.js Implementation
 ## Swiper Setup:
 
 Implement a Swiper slider with exactly three slides.
-Triggering Behavior Based on Scroll Position:
+
+### Triggering Behavior Based on Scroll Position:
 
 The Swiper should be initially inactive (not automatically sliding).
 When the user scrolls down the page and reaches the position where the Swiper is located, two actions should occur:
-### The Swiper starts sliding automatically (autoplay).
-### Window scrolling is disabled, preventing the user from scrolling away from the Swiper.
+1. The Swiper starts sliding automatically (autoplay).
+1. Window scrolling is disabled, preventing the user from scrolling away from the Swiper.
 
 
-Behavior on Reaching the Last Slide:
+### Behavior on Reaching the Last Slide:
 
 Once the user reaches the third (final) slide of the Swiper, two actions should occur:
 

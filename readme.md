@@ -17,16 +17,20 @@ When the user scrolls down the page and reaches the position where the Swiper is
 
 Once the user reaches the third (final) slide of the Swiper, two actions should occur:
 
-a. Window scrolling is re-enabled, allowing the user to continue scrolling past the Swiper.
-b. The automatic sliding of the Swiper stops.
-One-time Behavior:
+1. Window scrolling is re-enabled, allowing the user to continue scrolling past the Swiper.
+1. The automatic sliding of the Swiper stops.
+
+
+### One-time Behavior:
 
 The entire sequence (starting autoplay and disabling/enabling scroll) should only happen once. If the user scrolls back up and then down again to the Swiper, these behaviors should not re-trigger.
-Technical Implementation Notes:
 
-Use JavaScript event listeners to detect when the user's scroll position reaches the Swiper.
-Modify Swiper's settings dynamically based on the user's interaction (e.g., enabling autoplay, starting/stopping slides).
-Use a flag or a similar mechanism to ensure that the scroll-triggered behaviors only occur once.
+
+### Technical Implementation Notes:
+
+1. Use JavaScript event listeners to detect when the user's scroll position reaches the Swiper.
+1. Modify Swiper's settings dynamically based on the user's interaction (e.g., enabling autoplay, starting/stopping slides).
+1. Use a flag or a similar mechanism to ensure that the scroll-triggered behaviors only occur once.
 
 
 ## Method Used globaly
@@ -57,6 +61,8 @@ Use a flag or a similar mechanism to ensure that the scroll-triggered behaviors 
     - It's useful for determining how far down the page a particular element is located.
 
 Overall, this code provides a comprehensive way to control scrolling behavior on a webpage, covering mouse wheel, touch movements, and keyboard inputs. It's particularly useful in scenarios where you need to temporarily disable scrolling, such as when opening a modal window or implementing custom scroll behavior.
+
+## Core Implementation
 
 The below script sets up a Swiper slider that starts without looping. When the user scrolls to the Swiper's position, it disables further scrolling, enables looping on the Swiper, and starts autoplay. This behavior is intended to happen only once
 

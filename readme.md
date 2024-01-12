@@ -13,8 +13,9 @@ b) Window scrolling is disabled, preventing the user from scrolling away from th
 Behavior on Reaching the Last Slide:
 
 Once the user reaches the third (final) slide of the Swiper, two actions should occur:
-a) Window scrolling is re-enabled, allowing the user to continue scrolling past the Swiper.
-b) The automatic sliding of the Swiper stops.
+
+a. Window scrolling is re-enabled, allowing the user to continue scrolling past the Swiper.
+b. The automatic sliding of the Swiper stops.
 One-time Behavior:
 
 The entire sequence (starting autoplay and disabling/enabling scroll) should only happen once. If the user scrolls back up and then down again to the Swiper, these behaviors should not re-trigger.

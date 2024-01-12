@@ -1,110 +1,85 @@
 # Explanation:
-## HTML
-The structure has vertical sections and a horizontal scroll wrapper containing horizontal sections.
+Requirement Specification for Swiper.js Implementation
 
-## CSS: 
-The .vertical-section is styled to take the full viewport height. 
-The .horizontal-scroll-wrapper is styled to allow horizontal scrolling.
+## Swiper Setup:
 
-## JavaScript: 
-It checks the scroll position. When the user scrolls to the horizontal section, it disables vertical scrolling and enables it again after passing the horizontal section.
+Implement a Swiper slider with exactly three slides.
+Triggering Behavior Based on Scroll Position:
 
-## CSS Enhancements: 
-The default scrollbar is hidden to give a cleaner look. You can optionally style a custom scrollbar. Smooth transitions (transition) and smooth scrolling (scroll-behavior) are added for a more animated effect.
+The Swiper should be initially inactive (not automatically sliding).
+When the user scrolls down the page and reaches the position where the Swiper is located, two actions should occur:
+a) The Swiper starts sliding automatically (autoplay).
+b) Window scrolling is disabled, preventing the user from scrolling away from the Swiper.
+Behavior on Reaching the Last Slide:
 
-## JavaScript: 
-The wheel event listener is modified to scroll horizontally with a smooth animation. The scrolling speed can be adjusted by changing the multiplier for scrollAmount.
+Once the user reaches the third (final) slide of the Swiper, two actions should occur:
+a) Window scrolling is re-enabled, allowing the user to continue scrolling past the Swiper.
+b) The automatic sliding of the Swiper stops.
+One-time Behavior:
 
-## Animation: 
-The smooth transition in the CSS gives a slider-like feel when scrolling through the horizontal sections.
+The entire sequence (starting autoplay and disabling/enabling scroll) should only happen once. If the user scrolls back up and then down again to the Swiper, these behaviors should not re-trigger.
+Technical Implementation Notes:
 
-# Solution provided with the Swiper.
+Use JavaScript event listeners to detect when the user's scroll position reaches the Swiper.
+Modify Swiper's settings dynamically based on the user's interaction (e.g., enabling autoplay, starting/stopping slides).
+Use a flag or a similar mechanism to ensure that the scroll-triggered behaviors only occur once.
 
-it is not a straight forward solution and the behaviro is a bit bugy since it relies on the plugin.
-I do prefer to use a plugin free like the first version to acheive this.
 
-here you go how to implement same concept with swiper.
+## Method Used globaly
 
-To integrate the Swiper.js is to manage the vertical scroll behavior based on the position of the Swiper slider in the viewport and to utilize Swiper's own methods for horizontal scrolling.
+1. **`preventScroll` Function**:
+    - `e.preventDefault();`: This line stops the default action of the event from happening. For example, in the context of a `wheel` or `touchmove` event, it prevents the usual scrolling behavior of the browser.
+    - `e.stopPropagation();`: This stops the event from propagating (or "bubbling up") to parent elements. This is useful if you don't want other event listeners higher up in the DOM to trigger.
+    - `return false;`: This is an older way to achieve both `preventDefault()` and `stopPropagation()`. In modern JavaScript, it's more common to see the two methods used explicitly, as done in the first two lines.
 
-### Steps to Integrate:
+2. **`disableScroll` Function**:
+    - This function is designed to disable scrolling on the page.
+    - `document.addEventListener('wheel', preventScroll, { passive: false });`: Adds an event listener for the mouse wheel event and calls `preventScroll` when this event occurs. `{ passive: false }` ensures that the `preventDefault()` method works correctly to prevent scrolling.
+    - `document.addEventListener('touchmove', preventScroll, { passive: false });`: Similarly, this prevents scrolling on touch devices.
+    - `document.addEventListener('keydown', preventScrollForKeyEvents, { passive: false });`: This line is for disabling scrolling via keyboard inputs (like arrow keys, spacebar, etc.).
+    - `document.documentElement.classList.add('no-scroll');`: Optionally adds a class to the HTML document element, which can be used to apply CSS styles that prevent scrolling (e.g., `overflow: hidden;`).
 
-1. **Initialize Swiper with Mousewheel Control**: Initialize the Swiper slider with the mousewheel control enabled. This allows for horizontal scrolling within the slider using the mouse wheel.
+3. **`enableScroll` Function**:
+    - This is the counterpart to `disableScroll`, designed to re-enable scrolling on the page.
+    - It removes the event listeners added by `disableScroll`, effectively returning the page to its normal scrolling behavior.
+    - `document.documentElement.classList.remove('no-scroll');`: Removes the `no-scroll` class from the HTML document element, reversing any CSS-based scroll prevention.
 
-2. **Manage Vertical Scrolling**: Adapt the script to check if the Swiper slider is in view and disable vertical scrolling when it is. Re-enable vertical scrolling when you scroll past the slider.
+4. **`preventScrollForKeyEvents` Function**:
+    - This function prevents scrolling caused by keydown events for specific keys (e.g., arrow keys, spacebar).
+    - It checks if the pressed key is one of the keys that can cause scrolling and, if so, prevents the default action (scrolling).
 
-Here's the modified JavaScript code with Swiper integration:
+5. **`getElementY` Function**:
+    - This utility function calculates the vertical position (`Y-offset`) of an element relative to the top of the document.
+    - It's useful for determining how far down the page a particular element is located.
 
-### JavaScript with Swiper.js and Custom Scrolling:
+Overall, this code provides a comprehensive way to control scrolling behavior on a webpage, covering mouse wheel, touch movements, and keyboard inputs. It's particularly useful in scenarios where you need to temporarily disable scrolling, such as when opening a modal window or implementing custom scroll behavior.
 
-```javascript
-document.addEventListener("DOMContentLoaded", function() {
-    // Initialize Swiper
-    const swiper = new Swiper('.mySwiper', {
-        direction: 'horizontal',
-        slidesPerView: 'auto',
-        spaceBetween: 30,
-        mousewheel: {
-            forceToAxis: true,
-        },
-        keyboard: {
-            enabled: true,
-        },
-    });
+The below script sets up a Swiper slider that starts without looping. When the user scrolls to the Swiper's position, it disables further scrolling, enables looping on the Swiper, and starts autoplay. This behavior is intended to happen only once
 
-    let isSwiperInView = false;
-    const swiperContainer = document.querySelector('.mySwiper');
+, as indicated by the onetime flag. After the Swiper reaches the end, it re-enables scrolling and prevents the same sequence from happening again. This kind of functionality is useful for creating interactive scroll experiences on web pages, where specific behaviors are triggered as the user scrolls to certain sections of the page.
 
-    window.addEventListener('scroll', function() {
-        const topOfSwiper = swiperContainer.offsetTop;
-        const bottomOfSwiper = topOfSwiper + swiperContainer.offsetHeight;
 
-        if (window.scrollY >= topOfSwiper && window.scrollY < bottomOfSwiper) {
-            if (!isSwiperInView) {
-                isSwiperInView = true;
-                document.body.style.overflowY = 'hidden';
-            }
-        } else {
-            if (isSwiperInView) {
-                isSwiperInView = false;
-                document.body.style.overflowY = 'scroll';
-            }
-        }
-    });
+1. **DOMContentLoaded Event Listener**:
+    - The entire code block is wrapped inside a `document.addEventListener("DOMContentLoaded", function() { ... });`. This ensures that the script runs only after the entire HTML document has been fully loaded, which is necessary to correctly initialize elements like Swiper and calculate positions.
 
-    swiperContainer.addEventListener('wheel', function(event) {
-        if (isSwiperInView) {
-            event.preventDefault();
+2. **One-time Flag Initialization**:
+    - `let onetime = true;`: This variable is a flag to ensure that certain actions within the swiper event listeners are only executed once.
 
-            const totalWidth = swiperContainer.scrollWidth;
-            const currentScroll = swiperContainer.scrollLeft + swiperContainer.offsetWidth;
-            const scrollAmount = event.deltaY * 2;
+3. **Swiper Initialization**:
+    - `var swiper = new Swiper('.mySwiper', {...});`: This initializes the Swiper slider with specific configurations. In this case, the Swiper is set up with `loop: false`, which means it doesn't automatically loop back to the first slide when it reaches the end.
 
-            // Use Swiper's method to slide
-            if (scrollAmount > 0) {
-                swiper.slideNext();
-            } else {
-                swiper.slidePrev();
-            }
+4. **Calculating Swiper's Position**:
+    - `var swiperPosition = getElementY('.mySwiper');`: This calculates the vertical position of the Swiper container on the page. The `getElementY` function (not shown in this snippet) likely calculates the distance from the top of the document to the top of the Swiper element.
 
-            // Enable vertical scrolling at the end
-            if (currentScroll >= totalWidth) {
-                document.body.style.overflowY = 'scroll';
-                window.scrollBy(0, 10);
-            }
-        }
-    });
-});
-```
+5. **Swiper Event Listener (reachEnd)**:
+    - `swiper.on('reachEnd', function () {...});`: This sets up an event listener that triggers when the Swiper reaches the last slide.
+    - Inside this listener, if `onetime` is true, `enableScroll()` is called to re-enable scrolling on the page, and `onetime` is set to false to prevent this code from running again.
 
-### Explanation:
+6. **Scroll Event Handler**:
+    - `function handleScrollEvent() {...}`: This function handles the scroll event.
+    - It checks if the current scroll position is at or above the Swiper's position.
+    - If `onetime` is true and the condition is met, it disables the scroll (`disableScroll()`), changes the Swiper's loop setting to true, updates the Swiper, and starts Swiper's autoplay.
+    - After executing once, it removes the scroll event listener (`window.removeEventListener('scroll', handleScrollEvent);`) to prevent further execution.
 
-1. **Swiper Initialization**: The Swiper is initialized with mousewheel control, allowing horizontal scrolling within the swiper.
-
-2. **Scroll Event Listener**: The `scroll` event listener checks if the Swiper container is currently in the viewport. If it is, it disables vertical scrolling (`overflowY: 'hidden'`).
-
-3. **Wheel Event Listener on Swiper Container**: The `wheel` event listener on the Swiper container now uses Swiper's `slideNext` and `slidePrev` methods for horizontal scrolling. This ensures a smooth, native horizontal scroll experience provided by Swiper.js.
-
-4. **Managing Vertical Scroll**: Once the user scrolls past the Swiper container, vertical scrolling is re-enabled.
-
-This script effectively integrates the Swiper slider with the custom scrolling behavior, providing a seamless user experience where the page scrolls vertically, pauses for horizontal scrolling within the Swiper section, and then continues with vertical scrolling.
+7. **Adding the Scroll Event Listener**:
+    - `window.addEventListener('scroll', handleScrollEvent);`: This line adds the `handleScrollEvent` function as an event listener for the scroll event.
